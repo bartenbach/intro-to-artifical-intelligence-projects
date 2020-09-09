@@ -81,7 +81,7 @@ def tinyMazeSearch(problem):
 
 
 def genericSearchProblem(problem, dataStructure):
-    visited = []
+    visited = set()
     dataStructure.push((problem.getStartState(), []))
 
     while not dataStructure.isEmpty():
@@ -91,13 +91,12 @@ def genericSearchProblem(problem, dataStructure):
             continue
 
         if problem.isGoalState(currentNode):
-            print("Goal located!")
             return path
 
-        visited.append(currentNode)
+        visited.add(currentNode)
 
-        for successor in problem.getSuccessors(currentNode):
-            location, direction, cost = successor[0], successor[1], successor[2]
+        for node in problem.getSuccessors(currentNode):
+            location, direction, cost = node[0], node[1], node[2]
             if location not in visited:
                 dataStructure.push((location, path+[direction]))
 
@@ -124,8 +123,7 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return aStarSearch(problem, heuristic=nullHeuristic)
 
 
 def nullHeuristic(state, problem=None):
@@ -138,8 +136,33 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    priorityQueue = util.PriorityQueue()
+    visited = set()
+    costMap = {}
+    priorityQueue.push((problem.getStartState(), []), 0 +
+                       heuristic(problem.getStartState(), problem))
+    costMap[problem.getStartState()] = 0
+
+    while not priorityQueue.isEmpty():
+        currentNode, path = priorityQueue.pop()
+
+        if currentNode in visited:
+            continue
+
+        if problem.isGoalState(currentNode):
+            return path
+
+        visited.add(currentNode)
+        pathCost = costMap[currentNode]
+
+        for node in problem.getSuccessors(currentNode):
+            location, direction, cost = node[0], node[1], node[2]
+            if location in visited:
+                continue
+            else:
+                priorityQueue.push(
+                    (location, path+[direction]), pathCost + cost + heuristic(location, problem))
+            costMap[node[0]] = pathCost + cost
 
 
 # Abbreviations
