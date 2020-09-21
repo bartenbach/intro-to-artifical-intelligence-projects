@@ -337,8 +337,7 @@ def betterEvaluationFunction(currentGameState):
     if newPos in newFood.asList():
         evaluation += 10
     elif len(newFood.asList()) > 0:
-        evaluation += 1 / min([manhattanDistance(pellet, newPos) for pellet in newFood.asList()]
-)
+        evaluation += 1 / min([manhattanDistance(pellet, newPos) for pellet in newFood.asList()])
 
     return evaluation
 
